@@ -319,10 +319,41 @@ async def generar_cotizacion(peticion: PeticionCotizacion, usuario: dict = Depen
 
         # INSERTAR DETALLES PARA EL HISTORIAL Y LOS TRIGGERS
         if detalles_a_guardar:
-            cursor.executemany(
-                "INSERT INTO detalles_cotizacion (FolioCotizacion, IdServicio, Cantidad, ImporteLinea) VALUES (%s, %s, %s, %s)",
-                detalles_a_guardar
-            )
+            cursor.execute("SHOW COLUMNS FROM detalles_cotizacion")
+            columnas_detalle = {col["Field"] for col in cursor.fetchall()}
+
+            tiene_importe_camel = "ImporteLinea" in columnas_detalle
+            tiene_importe_snake = "importe_linea" in columnas_detalle
+
+            if not (tiene_importe_camel or tiene_importe_snake):
+                raise HTTPException(status_code=500, detail="La tabla detalles_cotizacion no tiene columna de importe reconocida")
+
+            if tiene_importe_camel and tiene_importe_snake:
+                sql_detalle = (
+                    "INSERT INTO detalles_cotizacion "
+                    "(FolioCotizacion, IdServicio, Cantidad, ImporteLinea, importe_linea) "
+                    "VALUES (%s, %s, %s, %s, %s)"
+                )
+                valores = [
+                    (folio, id_serv, cantidad, importe, importe)
+                    for (folio, id_serv, cantidad, importe) in detalles_a_guardar
+                ]
+            elif tiene_importe_snake:
+                sql_detalle = (
+                    "INSERT INTO detalles_cotizacion "
+                    "(FolioCotizacion, IdServicio, Cantidad, importe_linea) "
+                    "VALUES (%s, %s, %s, %s)"
+                )
+                valores = detalles_a_guardar
+            else:
+                sql_detalle = (
+                    "INSERT INTO detalles_cotizacion "
+                    "(FolioCotizacion, IdServicio, Cantidad, ImporteLinea) "
+                    "VALUES (%s, %s, %s, %s)"
+                )
+                valores = detalles_a_guardar
+
+            cursor.executemany(sql_detalle, valores)
 
         conexion.commit()
 
