@@ -50,25 +50,25 @@ def crear_pdf_cotizacion(datos):
             .hr-header {{ border-bottom: 2px solid #000; margin-bottom: 20px; }}
 
             /* DATOS CLIENTE Y FECHA MÁS JUNTOS */
-            .info-table {{ width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; table-layout: fixed; }}
-            .info-table td {{ white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; vertical-align: top; padding: 2px 4px; }}
+            .info-table {{ width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; table-layout: auto; }}
+            .info-table td {{ white-space: normal; word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; vertical-align: top; padding: 2px 4px; line-height: 1.1; }}
             .info-table .label {{ font-weight: bold; white-space: normal; width: 12%; }}
-            .info-table .value {{ width: 38%; }}
-            .info-table .date-label {{ font-weight: bold; text-align: right; width: 10%; padding-right: 5px; }}
-            .info-table .date-value {{ border-bottom: 1px solid #000; width: 20%; text-align: center; }}
+            .info-table .value {{ width: 56%; }}
+            .info-table .date-label {{ font-weight: bold; text-align: right; width: 8%; padding-right: 5px; }}
+            .info-table .date-value {{ border-bottom: 1px solid #000; width: 24%; text-align: center; }}
             
             /* TABLA DE CONCEPTOS */
-            .items-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; border: 2px solid #000; table-layout: fixed; }}
-            .items-table th {{ background-color: #d9d9d9; font-weight: bold; text-align: center; border: 1px solid #000; padding: 5px 2px; font-size: 9pt; white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; }}
-            .items-table td {{ border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 9pt; white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; }}
+            .items-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; border: 2px solid #000; table-layout: auto; }}
+            .items-table th {{ background-color: #d9d9d9; font-weight: bold; text-align: center; border: 1px solid #000; padding: 4px 2px; font-size: 8.5pt; white-space: normal; word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; line-height: 1.05; }}
+            .items-table td {{ border: 1px solid #000; padding: 5px 2px; text-align: center; vertical-align: middle; font-size: 9pt; white-space: normal; word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; line-height: 1.1; }}
             
             /* ANCHOS DE COLUMNAS FIJOS PARA EVITAR QUE SE EMPALMEN */
             .col-partida {{ width: 10%; }}
-            .col-desc {{ text-align: left; width: 41%; }}
-            .col-unidad {{ width: 10%; }}
+            .col-desc {{ text-align: left; width: 46%; }}
+            .col-unidad {{ width: 8%; }}
             .col-cant {{ width: 11%; }}
-            .col-precio {{ text-align: right; width: 14%; }}
-            .col-total {{ text-align: right; width: 14%; }}
+            .col-precio {{ text-align: right; width: 12%; }}
+            .col-total {{ text-align: right; width: 13%; }}
 
             .post-table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
             .avisos {{ font-size: 8pt; width: 60%; vertical-align: top; }}
@@ -104,7 +104,7 @@ def crear_pdf_cotizacion(datos):
             </tr>
             <tr>
                 <td class="label">ATENCIÓN:</td>
-                <td colspan="4" style="border-bottom: 1px solid #000;">{datos['cliente']['atencion']}</td>
+                <td colspan="4" style="border-bottom: 1px solid #000; padding: 4px 2px; width: 88%;">{datos['cliente']['atencion']}</td>
             </tr>
         </table>
         
@@ -115,11 +115,11 @@ def crear_pdf_cotizacion(datos):
         <table class="items-table">
             <thead>
                 <tr>
-                    <th class="col-partida">PARTIDA</th>
-                    <th class="col-desc">DESCRIPCION</th>
+                    <th class="col-partida">PART.</th>
+                    <th class="col-desc">DESCRIPCIÓN</th>
                     <th class="col-unidad">UNIDAD</th>
-                    <th class="col-cant">CANTIDAD</th>
-                    <th class="col-precio">PRECIO UNITARIO</th>
+                    <th class="col-cant">CANT.</th>
+                    <th class="col-precio">PRECIO U.</th>
                     <th class="col-total">TOTAL</th>
                 </tr>
             </thead>
