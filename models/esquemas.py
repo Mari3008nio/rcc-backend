@@ -2,8 +2,9 @@ from pydantic import BaseModel
 from typing import List
 
 class RenglonServicio(BaseModel):
-    id_servicio: int
-    cantidad: int
+    concepto: str
+    precio_unitario: float
+    cantidad: float
 
 # Molde completo para el cliente nuevo o existente
 class ClienteCotizacion(BaseModel):
