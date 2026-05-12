@@ -50,12 +50,12 @@ def crear_pdf_cotizacion(datos):
             .hr-header {{ border-bottom: 2px solid #000; margin-bottom: 20px; }}
 
             /* DATOS CLIENTE Y FECHA MÁS JUNTOS */
-            .info-table {{ width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; table-layout: auto; }}
-            .info-table td {{ white-space: normal; word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; vertical-align: top; padding: 2px 4px; line-height: 1.1; }}
-            .info-table .label {{ font-weight: bold; white-space: normal; width: 12%; }}
-            .info-table .value {{ width: 56%; }}
-            .info-table .date-label {{ font-weight: bold; text-align: right; width: 8%; padding-right: 5px; }}
-            .info-table .date-value {{ border-bottom: 1px solid #000; width: 24%; text-align: center; }}
+            .info-table {{ width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; table-layout: fixed; }}
+            .info-table td {{ white-space: normal; word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; vertical-align: bottom; padding: 4px 6px 2px; line-height: 1.2; }}
+            .info-table .label {{ font-weight: bold; white-space: normal; width: 10%; }}
+            .info-table .value {{ width: 55%; }}
+            .info-table .date-label {{ font-weight: bold; text-align: right; width: 10%; padding-right: 5px; }}
+            .info-table .date-value {{ border-bottom: 1px solid #000; width: 25%; text-align: center; padding-bottom: 2px; }}
             
             /* TABLA DE CONCEPTOS */
             .items-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; border: 2px solid #000; table-layout: auto; }}
@@ -98,13 +98,12 @@ def crear_pdf_cotizacion(datos):
             <tr>
                 <td class="label">CLIENTE:</td>
                 <td class="value" style="border-bottom: 1px solid #000;">{datos['cliente']['nombre']}</td>
-                <td style="width: 5%;"></td>
                 <td class="date-label">FECHA:</td>
                 <td class="date-value">{datos['fecha']}</td>
             </tr>
             <tr>
                 <td class="label">ATENCIÓN:</td>
-                <td colspan="4" style="border-bottom: 1px solid #000; padding: 4px 2px; width: 88%;">{datos['cliente']['atencion']}</td>
+                <td colspan="3" style="border-bottom: 1px solid #000; padding: 4px 2px;">{datos['cliente']['atencion']}</td>
             </tr>
         </table>
         
