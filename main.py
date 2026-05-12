@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 import random
 import os
 
-from core.pdf_engine import crear_pdf_cotizacion
 from db.conexion import obtener_conexion
 
 # --- SEGURIDAD ---
@@ -372,9 +371,8 @@ async def generar_cotizacion(peticion: PeticionCotizacion, usuario: dict = Depen
             "conceptos_pdf": conceptos_pdf,
             "finanzas": { "subtotal": subtotal, "iva": iva, "gran_total": gran_total }
         }
-        ruta_pdf = crear_pdf_cotizacion(resultado)
 
-        return { "mensaje": "Cotización exitosa", "folio": folio_generado, "pdf_path": ruta_pdf }
+        return { "mensaje": "Cotización exitosa", "folio": folio_generado }
     except Exception as e:
         conexion.rollback()
         raise HTTPException(status_code=500, detail=str(e))
@@ -407,3 +405,29 @@ async def obtener_historial_cotizaciones(request: Request, usuario: dict = Depen
     finally:
         cursor.close()
         conexion.close()
+
+@app.post("/api/v1/cotizaciones/subir-pdf/{folio}")
+async def subir_pdf_cotizacion(
+    folio: str,
+    request: Request,
+    archivo: UploadFile = File(...),
+    usuario: dict = Depends(obtener_usuario_actual),
+):
+    if not archivo.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Se requiere un archivo PDF")
+
+    if not os.path.exists("pdfs_generados"):
+        os.makedirs("pdfs_generados")
+
+    ruta_completa = os.path.join("pdfs_generados", f"cotizacion_{folio}.pdf")
+    try:
+        contenido = await archivo.read()
+        with open(ruta_completa, "wb") as archivo_pdf:
+            archivo_pdf.write(contenido)
+
+        return {
+            "mensaje": "PDF guardado en el servidor",
+            "url": construir_url_pdf(folio, request),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
