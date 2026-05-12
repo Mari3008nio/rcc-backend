@@ -65,8 +65,11 @@ async def obtener_usuario_actual(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="Token expirado o inválido")
 
 def construir_url_pdf(folio: str, request: Request) -> str:
-    """Construye la URL correcta del PDF usando el host actual."""
-    # Obtener protocolo y host del request
+    """Construye la URL correcta del PDF usando el host actual o una URL externa si está configurada."""
+    external_url = os.getenv("BACKEND_URL") or os.getenv("EXTERNAL_BACKEND_URL")
+    if external_url:
+        return f"{external_url.rstrip('/')}/pdfs/cotizacion_{folio}.pdf"
+
     scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
     host = request.headers.get("x-forwarded-host", request.headers.get("host", "localhost:8000"))
     return f"{scheme}://{host}/pdfs/cotizacion_{folio}.pdf"
