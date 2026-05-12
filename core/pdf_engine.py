@@ -1,6 +1,7 @@
 import os
-#from xhtml2pdf import pisa
+from xhtml2pdf import pisa
 from datetime import datetime
+from io import BytesIO
 
 # Configuración básica
 CARPETA_SALIDA = "pdfs_generados"
@@ -185,8 +186,13 @@ def crear_pdf_cotizacion(datos):
     """
 
     # --- CONVERTIR HTML A PDF ---
-    #with open(ruta_completa, "wb") as archivo_pdf:
-    #    pisa_status = pisa.CreatePDF(html_content, dest=archivo_pdf)
-
-    #return ruta_completa if not pisa_status.err else None
-    return "PDF temporalmente deshabilitado"
+    try:
+        with open(ruta_completa, "wb") as archivo_pdf:
+            pisa_status = pisa.CreatePDF(html_content, dest=archivo_pdf)
+        
+        if pisa_status.err:
+            return None
+        return ruta_completa
+    except Exception as e:
+        print(f"Error generando PDF: {str(e)}")
+        return None
