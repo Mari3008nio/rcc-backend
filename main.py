@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -64,6 +64,13 @@ async def obtener_usuario_actual(token: str = Depends(oauth2_scheme)):
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Token expirado o inválido")
+
+def construir_url_pdf(folio: str, request: Request) -> str:
+    """Construye la URL correcta del PDF usando el host actual."""
+    # Obtener protocolo y host del request
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("x-forwarded-host", request.headers.get("host", "localhost:8000"))
+    return f"{scheme}://{host}/pdfs/cotizacion_{folio}.pdf"
 
 
 @app.post("/api/v1/login")
@@ -376,7 +383,7 @@ async def generar_cotizacion(peticion: PeticionCotizacion, usuario: dict = Depen
         conexion.close()
 
 @app.get("/api/v1/cotizaciones/historial")
-async def obtener_historial_cotizaciones(usuario: dict = Depends(obtener_usuario_actual)):
+async def obtener_historial_cotizaciones(request: Request, usuario: dict = Depends(obtener_usuario_actual)):
     conexion = obtener_conexion()
     if not conexion: raise HTTPException(status_code=500, detail="Error de BD")
     try:
@@ -392,7 +399,7 @@ async def obtener_historial_cotizaciones(usuario: dict = Depends(obtener_usuario
             dt = item['fecha_hora']
             item['fecha'] = dt.strftime('%d/%m/%Y')
             item['hora'] = dt.strftime('%H:%M')
-            item['url'] = f"http://127.0.0.1:8000/pdfs/cotizacion_{item['folio']}.pdf"
+            item['url'] = construir_url_pdf(item['folio'], request)
 
         return {"historial": historial}
     except Exception as e:
