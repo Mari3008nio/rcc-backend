@@ -51,20 +51,24 @@ def crear_pdf_cotizacion(datos):
 
             /* DATOS CLIENTE Y FECHA MÁS JUNTOS */
             .info-table {{ width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; table-layout: fixed; }}
-            .info-table td {{ white-space: normal; word-wrap: break-word; }}
+            .info-table td {{ white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; vertical-align: top; padding: 2px 4px; }}
+            .info-table .label {{ font-weight: bold; white-space: normal; width: 12%; }}
+            .info-table .value {{ width: 38%; }}
+            .info-table .date-label {{ font-weight: bold; text-align: right; width: 10%; padding-right: 5px; }}
+            .info-table .date-value {{ border-bottom: 1px solid #000; width: 20%; text-align: center; }}
             
             /* TABLA DE CONCEPTOS */
             .items-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; border: 2px solid #000; table-layout: fixed; }}
-            .items-table th {{ background-color: #d9d9d9; font-weight: bold; text-align: center; border: 1px solid #000; padding: 5px 2px; font-size: 9pt; white-space: normal; word-wrap: break-word; }}
-            .items-table td {{ border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 9pt; white-space: normal; word-wrap: break-word; }}
+            .items-table th {{ background-color: #d9d9d9; font-weight: bold; text-align: center; border: 1px solid #000; padding: 5px 2px; font-size: 9pt; white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; }}
+            .items-table td {{ border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 9pt; white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; }}
             
             /* ANCHOS DE COLUMNAS FIJOS PARA EVITAR QUE SE EMPALMEN */
-            .col-partida {{ width: 9%; }}
+            .col-partida {{ width: 10%; }}
             .col-desc {{ text-align: left; width: 41%; }}
             .col-unidad {{ width: 10%; }}
-            .col-cant {{ width: 10%; }}
-            .col-precio {{ text-align: right; width: 15%; }}
-            .col-total {{ text-align: right; width: 15%; }}
+            .col-cant {{ width: 11%; }}
+            .col-precio {{ text-align: right; width: 14%; }}
+            .col-total {{ text-align: right; width: 14%; }}
 
             .post-table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
             .avisos {{ font-size: 8pt; width: 60%; vertical-align: top; }}
@@ -92,18 +96,19 @@ def crear_pdf_cotizacion(datos):
 
         <table class="info-table">
             <tr>
-                <td style="font-weight: bold; width: 12%;">CLIENTE:</td>
-                <td style="border-bottom: 1px solid #000; width: 53%;">{datos['cliente']['nombre']}</td>
+                <td class="label">CLIENTE:</td>
+                <td class="value" style="border-bottom: 1px solid #000;">{datos['cliente']['nombre']}</td>
                 <td style="width: 5%;"></td>
-                <td style="font-weight: bold; width: 10%; text-align: right; padding-right: 5px;">FECHA:</td>
-                <td style="border-bottom: 1px solid #000; width: 20%; text-align: center;">{datos['fecha']}</td>
+                <td class="date-label">FECHA:</td>
+                <td class="date-value">{datos['fecha']}</td>
+            </tr>
+            <tr>
+                <td class="label">ATENCIÓN:</td>
+                <td colspan="4" style="border-bottom: 1px solid #000;">{datos['cliente']['atencion']}</td>
             </tr>
         </table>
         
-        <div style="margin-bottom: 20px; font-size: 11pt;">
-            <strong>ATENCION:</strong>
-            <span style="border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 75px); max-width: 100%; min-width: 0; white-space: normal; word-wrap: break-word;">{datos['cliente']['atencion']}</span>
-        </div>
+        <div style="margin-bottom: 20px; font-size: 11pt;"><!-- empty spacer --></div>
 
         <p style="text-decoration: underline; margin-bottom: 15px;">Atendiendo sus indicaciones presentamos cotización:</p>
 
