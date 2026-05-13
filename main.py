@@ -182,18 +182,28 @@ async def listar_clientes(usuario: dict = Depends(obtener_usuario_actual)):
 @app.delete("/api/v1/clientes/borrar/{id_cliente}")
 async def borrar_cliente(id_cliente: int, usuario: dict = Depends(obtener_usuario_actual)):
     conexion = obtener_conexion()
-    if not conexion: raise HTTPException(status_code=500, detail="Error BD")
+    if not conexion:
+        raise HTTPException(status_code=500, detail="Error de BD")
     try:
         cursor = conexion.cursor()
+        # Primero verificar si tiene cotizaciones
+        cursor.execute("SELECT COUNT(*) FROM cotizaciones WHERE IdCliente = %s", (id_cliente,))
+        count = cursor.fetchone()[0]
+        if count > 0:
+            raise HTTPException(status_code=400, detail=f"No se puede borrar el cliente porque tiene {count} cotización(es) asociada(s).")
+        
         cursor.execute("DELETE FROM clientes WHERE IdCliente = %s", (id_cliente,))
         conexion.commit()
-        return {"mensaje": "Cliente borrado"}
+        return {"mensaje": "Cliente borrado exitosamente"}
+    except HTTPException:
+        raise
     except Exception as e:
         conexion.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error al borrar: {str(e)}")
     finally:
-        cursor.close()
-        conexion.close()
+        if conexion.is_connected():
+            cursor.close()
+            conexion.close()
 
 
 # ==========================================
