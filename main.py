@@ -38,7 +38,7 @@ app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 # ==========================================
 # CONFIGURACIÓN DE SEGURIDAD (JWT)
 # ==========================================
-SECRET_KEY = "tu_clave_secreta_rcc_muy_segura_2026"
+SECRET_KEY = os.getenv("SECRET_KEY", "clave_local_dev_insegura")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8 
 
@@ -366,15 +366,6 @@ async def generar_cotizacion(peticion: PeticionCotizacion, usuario: dict = Depen
             cursor.executemany(sql_detalle, valores)
 
         conexion.commit()
-
-        # PREPARAR DATA PARA EL PDF FINAL
-        resultado = {
-            "folio": folio_generado,
-            "fecha": datetime.now().strftime("%d/%m/%Y"),
-            "cliente": { "nombre": peticion.cliente.nombre, "atencion": peticion.cliente.atencion },
-            "conceptos_pdf": conceptos_pdf,
-            "finanzas": { "subtotal": subtotal, "iva": iva, "gran_total": gran_total }
-        }
 
         return { "mensaje": "Cotización exitosa", "folio": folio_generado }
     except Exception as e:

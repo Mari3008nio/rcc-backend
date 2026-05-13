@@ -3,6 +3,10 @@ import os
 import mysql.connector
 from mysql.connector import Error
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 def obtener_conexion():
     """Crea y retorna una conexión a la base de datos MySQL local."""
     try:
