@@ -18,7 +18,8 @@ def crear_pdf_cotizacion(datos):
     if not os.path.exists(CARPETA_SALIDA): os.makedirs(CARPETA_SALIDA)
 
     # Calcular ruta absoluta del logo para que xhtml2pdf lo encuentre sin problema
-    ruta_disco_logo = os.path.join(os.getcwd(), CARPETA_ASSETS, 'logo_nuevo.png')
+    # ruta_disco_logo = os.path.join(os.getcwd(), CARPETA_ASSETS, 'logo_nuevo.png')
+    ruta_disco_logo = os.path.join(os.getcwd(), CARPETA_ASSETS, 'logo.png')
     src_logo = ruta_disco_logo if os.path.exists(ruta_disco_logo) else ""
 
     # --- GENERAR HTML USANDO UNA PLANTILLA ---
